@@ -1,59 +1,30 @@
-import hre from 'hardhat'
-import { encryptDataField } from '@swisstronik/utils'
-import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/src/signers'
-import { HttpNetworkConfig } from 'hardhat/types'
-import deployedAddress from '../utils/deployed-address'
+const hre = require("hardhat");
+const { encryptDataField, decryptNodeResponse } = require("@swisstronik/utils");
 
-const sendShieldedTransaction = async (
-  signer: HardhatEthersSigner,
-  destination: string,
-  data: string,
-  value: number
-) => {
-  // Get the RPC link from the network configuration
-  const rpclink = (hre.network.config as HttpNetworkConfig).url
-
-  // Encrypt transaction data
-  const [encryptedData] = await encryptDataField(rpclink, data)
-
-  // Construct and sign transaction with encrypted data
+const sendShieldedTransaction = async (signer, destination, data, value) => {
+  const rpclink = hre.network.config.url;
+  const [encryptedData] = await encryptDataField(rpclink, data);
   return await signer.sendTransaction({
     from: signer.address,
     to: destination,
     data: encryptedData,
     value,
-  })
-}
+  });
+};
 
 async function main() {
-  // Address of the deployed contract
-  const contractAddress = deployedAddress
-
-  // Get the signer (your account)
-  const [signer] = await hre.ethers.getSigners()
-
-  // Construct a contract instance
-  const contractFactory = await hre.ethers.getContractFactory('Swisstronik')
-  const contract = contractFactory.attach(contractAddress)
-
-  // Send a shielded transaction to set a message in the contract
-  const functionName = 'setMessage'
-  const messageToSet = 'Hello Swisstronik!!'
-  const setMessageTx = await sendShieldedTransaction(
-    //@ts-ignore
-    signer,
-    contractAddress,
-    contract.interface.encodeFunctionData(functionName, [messageToSet]),
-    0
-  )
-  await setMessageTx.wait()
-
-  //It should return a TransactionResponse object
-  console.log('Transaction Receipt: ', setMessageTx)
+  const contractAddress = "0xf84Df872D385997aBc28E3f07A2E3cd707c9698a";
+  const [signer] = await hre.ethers.getSigners();
+  const contractFactory = await hre.ethers.getContractFactory("Swisstronik");
+  const contract = contractFactory.attach(contractAddress);
+  const functionName = "setMessage";
+  const messageToSet = "Hello Swisstronik!!";
+  const setMessageTx = await sendShieldedTransaction(signer, contractAddress, contract.interface.encodeFunctionData(functionName, [messageToSet]), 0);
+  await setMessageTx.wait();
+  console.log("Transaction Receipt: ", setMessageTx);
 }
 
-// Using async/await pattern to handle errors properly
 main().catch((error) => {
-  console.error(error)
-  process.exitCode = 1
-})
+  console.error(error);
+  process.exitCode = 1;
+});
