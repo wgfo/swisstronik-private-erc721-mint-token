@@ -16,10 +16,10 @@ import deployedAddress from '../utils/deployed-address'
  */
 const sendShieldedTransaction = async (signer, destination, data, value) => {
   // Get the RPC link from the network configuration
-  const rpclink = hre.network.config.url;
+  const rpclink = hre.network.config.url
 
   // Encrypt transaction data
-  const [encryptedData] = await encryptDataField(rpclink, data);
+  const [encryptedData] = await encryptDataField(rpclink, data)
 
   // Construct and sign transaction with encrypted data
   return await signer.sendTransaction({
@@ -27,30 +27,30 @@ const sendShieldedTransaction = async (signer, destination, data, value) => {
     to: destination,
     data: encryptedData,
     value,
-  });
-};
+  })
+}
 
 async function main() {
   // Address of the deployed contract
-  const contractAddress = "0xf84Df872D385997aBc28E3f07A2E3cd707c9698a";
+  const contractAddress = "0xf84Df872D385997aBc28E3f07A2E3cd707c9698a"
 
   // Get the signer (your account)
-  const [signer] = await hre.ethers.getSigners();
+  const [signer] = await hre.ethers.getSigners()
 
   // Construct a contract instance
-  const contractFactory = await hre.ethers.getContractFactory("Swisstronik");
-  const contract = contractFactory.attach(contractAddress);
+  const contractFactory = await hre.ethers.getContractFactory("Swisstronik")
+  const contract = contractFactory.attach(contractAddress)
 
   // Send a shielded transaction to set a message in the contract
-  const setMessageTx = await sendShieldedTransaction(signer, contractAddress, contract.interface.encodeFunctionData("setMessage", ["Hello Swisstronik!!"]), 0);
-  await setMessageTx.wait();
+  const setMessageTx = await sendShieldedTransaction(signer, contractAddress, contract.interface.encodeFunctionData("setMessage", ["Hello Swisstronik!!"]), 0)
+  await setMessageTx.wait()
 
   //It should return a TransactionResponse object
-  console.log("Transaction Receipt: ", setMessageTx);
+  console.log("Transaction Receipt: ", setMessageTx)
 }
 
 // Using async/await pattern to handle errors properly
 main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+  console.error(error)
+  process.exitCode = 1
+})
