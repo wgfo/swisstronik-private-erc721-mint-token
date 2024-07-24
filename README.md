@@ -1,25 +1,17 @@
-# Swisstronik Tesnet Techinal Task 1
+# Swisstronik Tesnet Techinal Task 5
 
 link : [Click!](https://www.swisstronik.com/testnet2/dashboard)
-
-Feel free donate to my EVM address
-
-EVM :
-
-```bash
-0x9902C3A98Df4b240ad5496cC26F89bAb8058f4aE
-```
 
 ## Steps
 
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/Mnuralim/hardhat-deploy-contract.git
+git clone https://github.com/wgfo/swisstronik-private-erc721-mint-token.git
 ```
 
 ```
-cd hardhat-deploy-contract
+cd swisstronik-private-erc721-mint-token
 ```
 
 ### 2. Install Dependency
